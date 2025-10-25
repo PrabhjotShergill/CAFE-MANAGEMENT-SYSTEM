@@ -1,0 +1,13 @@
+{
+  "staff": [
+    
+  ],
+  "reports": [
+    {
+      "id": 1,
+      "sales": 12050,
+      "orders": 315,
+      "lastUpdated": "2025-10-25T09:00:00"
+    }
+  ]
+}
