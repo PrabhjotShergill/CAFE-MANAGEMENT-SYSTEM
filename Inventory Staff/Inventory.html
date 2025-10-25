@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cafe QuickBite - Inventory Staff</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body { background: #f7f7f7; font-family: 'Segoe UI', Arial, sans-serif; }
+    .inventory-header {
+      padding: 18px 40px;
+      background: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #e9e9e9;
+      font-weight: bold;
+      font-size: 2rem;
+    }
+    .inventory-header .highlight {
+      color: #8bc34a;
+    }
+    .inventory-container {
+      max-width: 900px;
+      margin: 40px auto;
+      background: #fff;
+      border-radius: 16px;
+      padding: 28px 32px;
+      box-shadow: 0 1px 12px rgba(80,80,80,0.05);
+    }
+    h2 {
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+    table.inventory-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 1rem;
+    }
+    table.inventory-table th,
+    table.inventory-table td {
+      padding: 12px 10px;
+      border: 1px solid #ccc;
+      text-align: center;
+    }
+    table.inventory-table th {
+      background: #f3fbe7;
+      color: #79a144;
+    }
+    input.stock-input {
+      width: 70px;
+      padding: 6px 8px;
+      font-size: 1rem;
+      border-radius: 6px;
+      border: 1px solid #aaa;
+      text-align: center;
+      transition: border-color 0.2s ease;
+    }
+    input.stock-input:focus {
+      outline: none;
+      border-color: #8bc34a;
+    }
+    button.update-btn, button.notify-btn {
+      background: #8bc34a;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 7px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 15px;
+      transition: background 0.2s ease;
+    }
+    button.update-btn:hover, button.notify-btn:hover {
+      background: #689f38;
+    }
+    .btn-row {
+      margin-top: 25px;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+  </style>
+</head>
+<body>
+  <header class="inventory-header">
+    Cafe QuickBite <span class="highlight">Inventory</span> Staff
+  </header>
+
+  <div class="inventory-container">
+    <h2>Inventory Stock</h2>
+    <table class="inventory-table" id="inventoryTable">
+      <thead>
+        <tr>
+          <th>Item</th>
+          <th>Stock Quantity</th>
+          <th>Update Stock</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Inventory data inserted by JS -->
+      </tbody>
+    </table>
+
+    <div class="btn-row">
+      <button class="update-btn" onclick="updateStock()">Update Stock</button>
+      <button class="notify-btn" onclick="notifyManager()">Notify Manager</button>
+    </div>
+  </div>
+
+  <script>
+    // Sample inventory data
+    let inventory = [
+      { name: "Coffee Beans (kg)", stock: 20 },
+      { name: "Milk (liters)", stock: 35 },
+      { name: "Sugar (kg)", stock: 50 },
+      { name: "Tea Leaves (kg)", stock: 15 },
+      { name: "Brownie Packs", stock: 40 },
+      { name: "Cup Sleeves", stock: 100 },
+      { name: "Napkins", stock: 200 }
+    ];
+
+    function renderInventory() {
+      const tbody = document.getElementById('inventoryTable').querySelector('tbody');
+      tbody.innerHTML = '';
+      inventory.forEach((item, idx) => {
+        let tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${item.name}</td>
+          <td>${item.stock}</td>
+          <td>
+            <input type="number" min="0" value="${item.stock}" 
+                   class="stock-input" id="stockInput${idx}" />
+          </td>`;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function updateStock() {
+      // Read input values and update inventory array
+      inventory.forEach((item, idx) => {
+        const input = document.getElementById(`stockInput${idx}`);
+        let val = parseInt(input.value);
+        if (isNaN(val) || val < 0) {
+          alert(`Invalid stock quantity for "${item.name}". Please enter a valid number.`);
+          input.focus();
+          throw "Invalid stock quantity";
+        }
+        item.stock = val;
+      });
+      alert('Stock updated successfully!');
+      renderInventory();
+    }
+
+    function notifyManager() {
+      // For demo: just alert or console log
+      const lowStockItems = inventory.filter(i => i.stock < 10);
+      if (lowStockItems.length === 0) {
+        alert('All stock levels are sufficient. No notifications sent.');
+      } else {
+        let message = 'Low stock alert for:\n';
+        lowStockItems.forEach(i => {
+          message += `- ${i.name}: ${i.stock}\n`;
+        });
+        alert(message);
+      }
+    }
+
+    // Initial render
+    renderInventory();
+  </script>
+</body>
+</html>

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cafe QuickBite - Cashier POS</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body { background: #f7f7f7; }
+    .pos-header {
+      padding: 18px 40px 12px 40px;
+      background: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #e9e9e9;
+    }
+    .pos-logo { font-size: 2rem; font-weight: bold;}
+    .pos-logo .highlight { color: #8bc34a; }
+    .pos-container {
+      width: 850px;
+      margin: 38px auto;
+      display: flex;
+      gap: 24px;
+    }
+    .pos-menu, .pos-bill { background: #fff; border-radius: 14px; box-shadow: 0 1px 8px rgba(80,80,80,.05);}
+    .pos-menu { width: 46%; padding: 26px; }
+    .pos-bill { width: 54%; padding: 26px; }
+    .menu-list { display: flex; flex-wrap: wrap; gap: 13px; }
+    .menu-item {
+      background: #f3fbe7;
+      border-radius: 10px;
+      padding: 13px;
+      text-align: center;
+      width: 115px;
+      cursor: pointer;
+      transition: box-shadow .12s;
+      border: 1px solid #e7f5ce;
+    }
+    .menu-item:hover { box-shadow: 0 2px 10px #c9deaf56; }
+    .item-name { font-weight: 600; color: #3b3b3b; font-size: 1rem;}
+    .item-price { font-weight: bold; color: #6d9c23;}
+
+    table.bill-table { width: 100%; border-collapse: collapse; margin-top: 12px;}
+    table.bill-table th, table.bill-table td {
+      padding: 8px 6px; text-align: center; font-size: 1rem;
+    }
+    table.bill-table th { background: #f3fbe7; color: #79a144; }
+    table.bill-table td { color: #222; }
+    table.bill-table tr td:last-child { color: #c23519; }
+    .actions-btn {
+      background: #8bc34a;
+      color: #fff;
+      border: none;
+      border-radius: 7px;
+      padding: 4px 12px;
+      font-weight: 500;
+      font-size: 0.98rem;
+      cursor: pointer;
+      margin: 2px;
+      transition: background 0.18s;
+    }
+    .actions-btn:hover { background: #689f38; }
+    .bill-summary {
+      margin-top: 24px;
+      padding: 15px 10px 6px 10px;
+      border-top: 1px solid #eee;
+    }
+    .bill-summary label { font-size: 1rem; }
+    .bill-summary input[type="number"] {
+      padding: 4px 7px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      width: 67px;
+      font-size: 1rem;
+    }
+    .total-label { font-size: 1.18rem; font-weight: bold; }
+    .grand-total { color: #8bc34a; font-size: 1.6rem; font-weight: bold; }
+    .payment-btn {
+      padding: 10px 18px;
+      margin: 14px 8px 6px 0;
+      border-radius: 7px;
+      border: none;
+      font-weight: 600;
+      font-size: 1.07rem;
+      color: #fff;
+      background: #79a144;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .payment-btn:hover { background: #689f38; }
+  </style>
+</head>
+<body>
+  <div class="pos-header">
+    <span class="pos-logo">QuickBite <span class="highlight">cafe</span> Cashier</span>
+    <span>Cashier Panel</span>
+  </div>
+  <div class="pos-container">
+    <!-- MENU SELECTION -->
+    <div class="pos-menu">
+      <h2>Menu</h2>
+      <div class="menu-list" id="menuList">
+        <!-- Items auto generated via JS -->
+      </div>
+    </div>
+    <!-- BILLING SYSTEM -->
+    <div class="pos-bill">
+      <h2>Current Bill</h2>
+      <table class="bill-table" id="billTable">
+        <thead>
+          <tr>
+            <th>Item</th><th>Qty</th><th>Price</th><th>Remove</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Items via JS -->
+        </tbody>
+      </table>
+      <div class="bill-summary">
+        <label>Discount: 
+          <input type="number" id="discount" value="0" min="0" max="100"> %
+        </label>
+        <div style="margin: 12px 0 0 0;">
+          <span class="total-label">Total: </span>
+          ₹<span id="totalAmount">0</span>
+        </div>
+        <div style="margin: 6px 0;">
+          <span class="total-label">Grand Total: </span>
+          ₹<span class="grand-total" id="grandTotal">0</span>
+        </div>
+        <button class="payment-btn" onclick="processPayment('Cash')">Process Cash</button>
+        <button class="payment-btn" onclick="processPayment('Card')">Process Card</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    // Menu Items List
+    const menuItems = [
+      { name: "Espresso", price: 80 },
+      { name: "Latte", price: 120 },
+      { name: "Cappuccino", price: 110 },
+      { name: "Mocha", price: 140 },
+      { name: "Cold Brew", price: 150 },
+      { name: "Iced Coffee", price: 130 },
+      { name: "Brownie", price: 80 },
+      { name: "Choco Chip Cookie", price: 60 },
+      { name: "Veg Sandwich", price: 90 },
+      { name: "Banana Muffin", price: 85 }
+    ];
+    // Bill Items
+    let bill = [];
+    // Render Menu List
+    const menuListDiv = document.getElementById('menuList');
+    menuItems.forEach((item, i) => {
+      let div = document.createElement('div');
+      div.className = 'menu-item';
+      div.innerHTML = `<div class="item-name">${item.name}</div>
+                       <div class="item-price">₹${item.price}</div>
+                       <button class="actions-btn" onclick="addToBill(${i})">Add</button>`;
+      menuListDiv.appendChild(div);
+    });
+    // Add to Bill
+    window.addToBill = function(idx) {
+      let found = bill.find(x => x.name === menuItems[idx].name);
+      if(found) found.qty += 1;
+      else bill.push({ ...menuItems[idx], qty: 1 });
+      renderBill();
+    }
+    // Remove from Bill
+    window.removeFromBill = function(idx) {
+      bill.splice(idx, 1);
+      renderBill();
+    }
+    // Bill Table Render
+    function renderBill() {
+      let tbody = document.getElementById('billTable').getElementsByTagName('tbody')[0];
+      tbody.innerHTML = "";
+      bill.forEach((item, i) => {
+        let row = tbody.insertRow();
+        row.insertCell(0).innerText = item.name;
+        row.insertCell(1).innerText = item.qty;
+        row.insertCell(2).innerText = '₹'+(item.price * item.qty);
+        row.insertCell(3).innerHTML = `<button class="actions-btn" onclick="removeFromBill(${i})">X</button>`;
+      });
+      updateTotals();
+    }
+    // Update Totals & Discounts
+    function updateTotals() {
+      let total = bill.reduce((sum, i) => sum + (i.price * i.qty), 0);
+      document.getElementById('totalAmount').innerText = total;
+      let discount = parseFloat(document.getElementById('discount').value || 0);
+      let discounted = total - (total * discount / 100);
+      document.getElementById('grandTotal').innerText = Math.round(discounted);
+    }
+    document.getElementById('discount').addEventListener('input', updateTotals);
+    // Payment
+    window.processPayment = function(method) {
+      if(bill.length === 0) { alert('No items in the bill!'); return; }
+      let total = document.getElementById('grandTotal').innerText;
+      alert(`Payment of ₹${total} processed by ${method}!\nThank you.`);
+      bill = [];
+      renderBill();
+      document.getElementById('discount').value = 0;
+      updateTotals();
+    }
+    // Init
+    renderBill();
+  </script>
+</body>
+</html>

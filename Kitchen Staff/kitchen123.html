@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cafe QuickBite - Kitchen Staff</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body { background: #f7f7f7; }
+    .kitchen-header {
+      padding: 18px 40px 12px 40px;
+      background: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #e9e9e9;
+    }
+    .kitchen-logo {
+      font-size: 2rem;
+      font-weight: bold;
+    }
+    .kitchen-logo .highlight {
+      color: #8bc34a;
+    }
+    .kitchen-container {
+      width: 850px;
+      margin: 38px auto;
+      padding: 26px;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 1px 8px rgba(80, 80, 80, 0.05);
+    }
+    h2 {
+      margin-bottom: 18px;
+    }
+    table.order-list {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    table.order-list th,
+    table.order-list td {
+      border: 1px solid #ddd;
+      padding: 10px 8px;
+      text-align: center;
+      font-size: 1rem;
+    }
+    table.order-list th {
+      background: #f3fbe7;
+      color: #79a144;
+    }
+    select.status-select {
+      border-radius: 7px;
+      padding: 6px 10px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+      cursor: pointer;
+      font-weight: 600;
+      color: #3b3b3b;
+      transition: border-color 0.2s ease;
+    }
+    select.status-select:hover {
+      border-color: #8bc34a;
+    }
+  </style>
+</head>
+<body>
+  <div class="kitchen-header">
+    <span class="kitchen-logo">QuickBite <span class="highlight">cafe</span> Kitchen</span>
+    <span>Kitchen Staff Panel</span>
+  </div>
+  <div class="kitchen-container">
+    <h2>Current Orders</h2>
+    <table class="order-list" id="orderTable">
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Items</th>
+          <th>Status</th>
+          <th>Update Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Orders inserted here by JS -->
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    // Sample orders data
+    let orders = [
+      { id: 101, items: ['Espresso', 'Latte'], status: 'Pending' },
+      { id: 102, items: ['Mocha', 'Brownie'], status: 'In Progress' },
+      { id: 103, items: ['Cold Brew', 'Veg Sandwich'], status: 'Ready' }
+    ];
+
+    const statusOptions = ['Pending', 'In Progress', 'Ready', 'Completed'];
+
+    function renderOrders() {
+      const tbody = document.getElementById('orderTable').querySelector('tbody');
+      tbody.innerHTML = '';
+      orders.forEach((order, index) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${order.id}</td>
+          <td>${order.items.join(', ')}</td>
+          <td class="status-text">${order.status}</td>
+          <td>
+            <select class="status-select" onchange="updateStatus(${index}, this.value)">
+              ${statusOptions.map(
+                status => `<option value="${status}" ${status === order.status ? 'selected' : ''}>${status}</option>`
+              ).join('')}
+            </select>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function updateStatus(orderIndex, newStatus) {
+      orders[orderIndex].status = newStatus;
+      // Optionally send update to server here
+      renderOrders();
+    }
+
+    renderOrders();
+  </script>
+</body>
+</html>

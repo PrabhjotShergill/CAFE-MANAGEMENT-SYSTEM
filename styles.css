@@ -1,0 +1,122 @@
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: blue;
+}
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 25px 40px;
+  background: #fff;
+  border-bottom: 1px solid #e5e5e5;
+}
+.logo {
+  font-size: 2rem;
+  font-weight: bold;
+}
+.logo .highlight {
+  color: #8bc34a;
+}
+.delivery-info {
+  line-height: 1.2;
+  font-size: 1rem;
+  margin: 0 24px;
+}
+.address {
+  font-size: 0.9rem;
+  color: #777;
+}
+.search-login {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.search-login input[type="text"] {
+  padding: 7px 12px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  min-width: 180px;
+}
+.login-btn, .cart-btn {
+  background: #f2f2f2;
+  border: none;
+  border-radius: 6px;
+  padding: 7px 16px;
+  cursor: pointer;
+  font-weight: 500;
+}
+.cart-btn {
+  background: #ececec;
+}
+
+main {
+  padding: 28px 50px;
+}
+.menu-section {
+  margin-bottom: 38px;
+}
+.menu-section h2 {
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin-bottom: 18px;
+}
+.items-row {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.item-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 1px 4px rgba(100,100,100,0.07);
+  padding: 18px 16px;
+  width: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+.item-card img {
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
+  margin-bottom: 10px;
+}
+.item-name {
+  font-weight: 600;
+  font-size: 1.05rem;
+  margin-bottom: 2px;
+  text-align: center;
+}
+.item-details {
+  color: #888;
+  font-size: 0.94rem;
+  margin-bottom: 8px;
+  text-align: center;
+}
+.item-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  width: 100%;
+}
+.item-price {
+  color: #222;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+.add-btn {
+  background: #8bc34a;
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  padding: 5px 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.add-btn:hover {
+  background: #689f38;
+}

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cafe QuickBite - Manager Dashboard</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="manager.css">
+
+</head>
+<body>
+  <header class="manager-header">
+    Cafe QuickBite <span class="highlight">Manager</span> Dashboard
+  </header>
+  <div class="dashboard-container">
+    <div class="section" id="reportSection">
+      <h2>Reports</h2>
+      <p><strong>Sales Summary:</strong> ₹<span id="salesTotal">12050</span></p>
+      <p><strong>Orders Processed:</strong> <span id="ordersCount">315</span></p>
+      <button onclick="generateReport()">Generate New Report</button>
+      <p id="reportMsg" style="margin-top:10px; color:green;"></p>
+    </div>
+    <div class="section" id="staffSection">
+      <h2>Manage Staff</h2>
+      <table id="staffTable">
+        <thead>
+          <tr><th>Name</th><th>Role</th><th>Assign Role</th></tr>
+        </thead>
+        <tbody>
+          <!-- Staff list -->
+        </tbody>
+      </table>
+    </div>
+    <div class="section" id="inventorySection">
+      <h2>Inventory Monitoring</h2>
+      <table id="inventoryTable">
+        <thead>
+          <tr><th>Item</th><th>Stock</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          <!-- Inventory -->
+        </tbody>
+      </table>
+    </div>
+    <button onclick="checkLowStock()">Check Low Stock Alerts</button>
+  </div>
+
+  <script>
+    // Sample staff data
+    let staff = [
+      { name: 'Alice', role: 'Cashier' },
+      { name: 'Bob', role: 'Kitchen' },
+      { name: 'Charlie', role: 'Waiter' },
+      { name: 'Diana', role: 'Inventory' }
+    ];
+
+    // Sample inventory data
+    let inventory = [
+      { name: 'Coffee Beans (kg)', stock: 20 },
+      { name: 'Milk (liters)', stock: 8 },
+      { name: 'Sugar (kg)', stock: 50 },
+      { name: 'Tea Leaves (kg)', stock: 15 },
+      { name: 'Brownie Packs', stock: 3 },
+      { name: 'Cup Sleeves', stock: 100 },
+      { name: 'Napkins', stock: 2 }
+    ];
+
+    // Roles to assign
+    const roles = ['Cashier', 'Kitchen', 'Waiter', 'Inventory', 'Manager'];
+
+    function renderStaff() {
+      const tbody = document.getElementById('staffTable').querySelector('tbody');
+      tbody.innerHTML = '';
+      staff.forEach((s, idx) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${s.name}</td>
+          <td>${s.role}</td>
+          <td>
+            <select onchange="assignRole(${idx}, this.value)">
+              ${roles.map(r => `<option value="${r}" ${r === s.role ? 'selected' : ''}>${r}</option>`).join('')}
+            </select>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function assignRole(index, newRole) {
+      staff[index].role = newRole;
+      renderStaff();
+    }
+
+    function renderInventory() {
+      const tbody = document.getElementById('inventoryTable').querySelector('tbody');
+      tbody.innerHTML = '';
+      inventory.forEach(item => {
+        const tr = document.createElement('tr');
+        let statusClass = item.stock < 10 ? 'alert-low' : '';
+        const statusText = item.stock < 10 ? 'Low Stock' : 'Sufficient';
+        tr.innerHTML = `
+          <td>${item.name}</td>
+          <td>${item.stock}</td>
+          <td class="${statusClass}">${statusText}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function generateReport() {
+      // Simulate generating updated reports
+      let newSales = Math.floor(10000 + Math.random() * 5000);
+      let newOrders = Math.floor(300 + Math.random() * 50);
+      document.getElementById('salesTotal').innerText = newSales;
+      document.getElementById('ordersCount').innerText = newOrders;
+      document.getElementById('reportMsg').innerText = 'Report updated successfully at ' + new Date().toLocaleTimeString();
+      setTimeout(() => {
+        document.getElementById('reportMsg').innerText = '';
+      }, 9000);
+    }
+
+    function checkLowStock() {
+      const lowItems = inventory.filter(i => i.stock < 10);
+      if (lowItems.length === 0) {
+        alert('No low stock items at the moment.');
+      } else {
+        let msg = 'Low stock alert for:\n';
+        lowItems.forEach(i => {
+          msg += `• ${i.name} — Stock: ${i.stock}\n`;
+        });
+        alert(msg);
+      }
+    }
+
+    renderStaff();
+    renderInventory();
+  </script>
+</body>
+</html>
